@@ -1,2 +1,4 @@
+# Local SQLite database
 scum.db
+
 target/
