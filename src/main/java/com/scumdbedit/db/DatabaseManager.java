@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.scumdbedit.model.Player;
+import com.scumdbedit.model.PlayerData;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -98,6 +99,78 @@ public class DatabaseManager {
         backupDatabase();
         try (Statement stmt = connect().createStatement()) {
             return stmt.executeUpdate(sql);
+        }
+    }
+
+    private int queryForInt(String sql) throws SQLException {
+        try (Statement stmt = connect().createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            return rs.next() ? rs.getInt(1) : 0;
+        }
+    }
+
+    public PlayerData loadPlayerData(String steamId) throws SQLException {
+        int famePoints = queryForInt(
+                "SELECT fame_points FROM fame WHERE steam_id='" + steamId + "'");
+        int money = queryForInt(
+                "SELECT money FROM fame WHERE steam_id='" + steamId + "'");
+        int gold = queryForInt(
+                "SELECT gold FROM fame WHERE steam_id='" + steamId + "'");
+
+        int baseStr = queryForInt(
+                "SELECT strength_level FROM metabolism WHERE steam_id='" + steamId + "'");
+        int muscle = queryForInt(
+                "SELECT muscle_mass FROM body WHERE steam_id='" + steamId + "'");
+        int baseCon = queryForInt(
+                "SELECT constitution_level FROM metabolism WHERE steam_id='" + steamId + "'");
+        int injury = queryForInt(
+                "SELECT damage FROM injuries WHERE steam_id='" + steamId + "'");
+        int baseDex = queryForInt(
+                "SELECT dexterity_level FROM metabolism WHERE steam_id='" + steamId + "'");
+        int rest = queryForInt(
+                "SELECT rest_quality FROM sleep WHERE steam_id='" + steamId + "'");
+        int baseInt = queryForInt(
+                "SELECT intelligence_level FROM metabolism WHERE steam_id='" + steamId + "'");
+        int headDamage = queryForInt(
+                "SELECT head_damage FROM injuries WHERE steam_id='" + steamId + "'");
+
+        int strength = baseStr + muscle;
+        int constitution = baseCon - injury;
+        int dexterity = baseDex + rest;
+        int intelligence = baseInt - headDamage;
+
+        return new PlayerData(famePoints, money, gold,
+                strength, constitution, dexterity, intelligence);
+    }
+
+    public void savePlayerData(String steamId, PlayerData data)
+            throws SQLException, IOException {
+        backupDatabase();
+        Connection conn = connect();
+        try (Statement stmt = conn.createStatement()) {
+            conn.setAutoCommit(false);
+            stmt.executeUpdate("UPDATE fame SET fame_points=" + data.getFamePoints()
+                    + ", money=" + data.getMoney()
+                    + ", gold=" + data.getGold()
+                    + " WHERE steam_id='" + steamId + "'");
+            stmt.executeUpdate("UPDATE metabolism SET strength_level=" + data.getStrength()
+                    + ", constitution_level=" + data.getConstitution()
+                    + ", dexterity_level=" + data.getDexterity()
+                    + ", intelligence_level=" + data.getIntelligence()
+                    + " WHERE steam_id='" + steamId + "'");
+            stmt.executeUpdate("UPDATE body SET muscle_mass=" + data.getStrength()
+                    + " WHERE steam_id='" + steamId + "'");
+            stmt.executeUpdate("UPDATE sleep SET rest_quality=" + data.getDexterity()
+                    + " WHERE steam_id='" + steamId + "'");
+            stmt.executeUpdate("UPDATE injuries SET damage=" + data.getConstitution()
+                    + ", head_damage=" + data.getIntelligence()
+                    + " WHERE steam_id='" + steamId + "'");
+            conn.commit();
+        } catch (SQLException e) {
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.setAutoCommit(true);
         }
     }
 
