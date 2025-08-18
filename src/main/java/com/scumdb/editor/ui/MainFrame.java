@@ -1,6 +1,7 @@
 package com.scumdb.editor.ui;
 
 import com.scumdb.editor.service.PlayerService;
+
 import javax.swing.*;
 import java.awt.*;
 

@@ -2,6 +2,7 @@ package com.scumdb.editor.ui;
 
 import com.scumdb.editor.dao.Database;
 import com.scumdb.editor.service.PlayerService;
+
 import javax.swing.SwingUtilities;
 
 /** Entry point for the SCUM DB Editor application. */
