@@ -10,6 +10,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.scumdbedit.model.Player;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -58,6 +62,27 @@ public class DatabaseManager {
                 }
             }
         }
+    }
+
+    /**
+     * Loads all players from the database.
+     *
+     * @return list of {@link Player} entries
+     * @throws SQLException if a database access error occurs
+     */
+    public List<Player> loadPlayers() throws SQLException {
+        List<Player> players = new ArrayList<>();
+        String sql = "SELECT name, steam_id FROM character_stats";
+        try (Statement stmt = connect().createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                Player player = new Player(
+                        rs.getString("name"),
+                        rs.getString("steam_id"));
+                players.add(player);
+            }
+        }
+        return players;
     }
 
     /**
