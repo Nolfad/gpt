@@ -32,6 +32,48 @@ pip install -e .
 python -m gravador_cdrdao.main
 ```
 
+## Modo de desenvolvimento (detalhado)
+### 1) Preparar dependências do sistema
+Escolha o comando da sua distro (inclua `cdrdao`, `pyside6`, `polkit` e utilitários):
+```bash
+# Ubuntu/Debian
+sudo apt install cdrdao python3-pyside6 dvd+rw-tools util-linux udev policykit-1
+
+# Fedora
+sudo dnf install cdrdao python3-pyside6 dvd+rw-tools util-linux udev polkit
+
+# Arch
+sudo pacman -S cdrdao python-pyside6 dvd+rw-tools util-linux udev polkit
+```
+
+### 2) Criar ambiente virtual
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -U pip
+```
+
+### 3) Instalar dependências Python
+```bash
+pip install -e .
+```
+
+### 4) Executar o app (não usar root)
+```bash
+python -m gravador_cdrdao.main
+```
+
+### 5) Rodar testes e lint (opcional)
+```bash
+pytest
+ruff check .
+black --check .
+```
+
+### 6) Dicas de desenvolvimento
+- Para testar permissões de drive, confirme seu grupo (`id -nG`) e, se necessário, adicione ao grupo `cdrom`/`optical` e faça logout/login.
+- A UI sempre deve ser executada como usuário comum; ações privilegiadas usam `pkexec` com o helper.
+
 ## Build e instalação de pacotes
 ### .deb
 ```bash
