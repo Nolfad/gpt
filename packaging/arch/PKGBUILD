@@ -1,0 +1,23 @@
+pkgname=gravador-cdrdao
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Gravador simples de CDs usando cdrdao"
+arch=("any")
+url="https://example.com/gravador-cdrdao"
+license=("GPL3")
+depends=("python" "cdrdao" "python-pyside6" "polkit")
+makedepends=("python-build" "python-installer" "python-wheel")
+source=("$pkgname-$pkgver.tar.gz")
+sha256sums=("SKIP")
+
+build() {
+  python -m build --wheel --no-isolation
+}
+
+package() {
+  python -m installer --destdir="$pkgdir" dist/*.whl
+  install -D -m 0644 resources/gravador-cdrdao.desktop "$pkgdir/usr/share/applications/gravador-cdrdao.desktop"
+  install -D -m 0644 resources/gravador-cdrdao.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/gravador-cdrdao.svg"
+  install -D -m 0755 resources/gravador-cdrdao-helper "$pkgdir/usr/libexec/gravador-cdrdao-helper"
+  install -D -m 0644 resources/br.com.gravadorcdrdao.policy "$pkgdir/usr/share/polkit-1/actions/br.com.gravadorcdrdao.policy"
+}

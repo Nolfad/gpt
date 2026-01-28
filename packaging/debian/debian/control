@@ -1,0 +1,12 @@
+Source: gravador-cdrdao
+Section: utils
+Priority: optional
+Maintainer: Equipe Gravador CDRDAO <dev@example.com>
+Build-Depends: debhelper-compat (= 13), dh-python, python3-all, python3-setuptools
+Standards-Version: 4.6.2
+
+Package: gravador-cdrdao
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}, cdrdao, python3-pyside6, policykit-1
+Description: Gravador simples de CDs usando cdrdao
+ Aplicativo GUI com suporte a CUE/BIN multi-trilha (PS1).

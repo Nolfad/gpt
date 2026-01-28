@@ -1,0 +1,4 @@
+resources/gravador-cdrdao.desktop usr/share/applications/
+resources/gravador-cdrdao.svg usr/share/icons/hicolor/scalable/apps/gravador-cdrdao.svg
+resources/gravador-cdrdao-helper usr/libexec/gravador-cdrdao-helper
+resources/br.com.gravadorcdrdao.policy usr/share/polkit-1/actions/
