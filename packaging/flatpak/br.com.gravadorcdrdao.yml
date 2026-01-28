@@ -1,0 +1,19 @@
+app-id: br.com.gravadorcdrdao
+runtime: org.kde.Platform
+runtime-version: "6.6"
+sdk: org.kde.Sdk
+command: gravador-cdrdao
+finish-args:
+  - --device=all
+  - --filesystem=home
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+modules:
+  - name: gravador-cdrdao
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app .
+    sources:
+      - type: dir
+        path: ../../
